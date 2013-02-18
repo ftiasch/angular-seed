@@ -1,20 +1,20 @@
-'use strict';
-var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
-var mountFolder = function (connect, dir) {
-    return connect.static(require('path').resolve(dir));
-};
+'use strict'
 
-module.exports = function (grunt) {
-    // load all grunt tasks
-    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet
+mountFolder = (connect, dir) ->
+    connect.static(require('path').resolve(dir))
 
-    // configurable paths
-    var yeomanConfig = {
+module.exports = (grunt) ->
+    # load all grunt tasks
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks)
+
+    # configurable paths
+    yeomanConfig = {
         app: 'app',
         dist: 'dist'
-    };
+    }
 
-    grunt.initConfig({
+    grunt.initConfig {
         yeoman: yeomanConfig,
         watch: {
             coffee: {
@@ -24,10 +24,6 @@ module.exports = function (grunt) {
             coffeeTest: {
                 files: ['test/spec/*.coffee'],
                 tasks: ['coffee:test']
-            },
-            compass: {
-                files: ['<%= yeoman.app %>/styles/*.{scss,sass}'],
-                tasks: ['compass']
             },
             livereload: {
                 files: [
@@ -45,32 +41,29 @@ module.exports = function (grunt) {
             },
             livereload: {
                 options: {
-                    middleware: function (connect) {
+                    middleware: (connect) ->
                         return [
                             lrSnippet,
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, 'app')
-                        ];
-                    }
+                        ]
                 }
             },
             test: {
                 options: {
-                    middleware: function (connect) {
+                    middleware: (connect) ->
                         return [
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, 'test')
-                        ];
-                    }
+                        ]
                 }
             },
             dist: {
                 options: {
-                    middleware: function (connect) {
+                    middleware: (connect) ->
                         return [
                             mountFolder(connect, 'dist')
-                        ];
-                    }
+                        ]
                 }
             }
         },
@@ -103,9 +96,13 @@ module.exports = function (grunt) {
         },
         coffee: {
             dist: {
-                files: {
-                    '.tmp/scripts/coffee.js': '<%= yeoman.app %>/scripts/*.coffee'
-                }
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/scripts',
+                    src: '*.coffee',
+                    dest: '.tmp/scripts',
+                    ext: '.js'
+                }]
             },
             test: {
                 files: [{
@@ -116,44 +113,27 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        compass: {
-            options: {
-                sassDir: '<%= yeoman.app %>/styles',
-                cssDir: '.tmp/styles',
-                imagesDir: '<%= yeoman.app %>/images',
-                javascriptsDir: '<%= yeoman.app %>/scripts',
-                fontsDir: '<%= yeoman.app %>/styles/fonts',
-                importPath: 'app/components',
-                relativeAssets: true
-            },
-            dist: {},
-            server: {
-                options: {
-                    debugInfo: true
-                }
-            }
-        },
-        // not used since Uglify task does concat,
-        // but still available if needed
-        /*concat: {
-            dist: {}
-        },*/
+        # not used since Uglify task does concat,
+        # but still available if needed
+        # concat: {
+        #     dist: {}
+        # },
         requirejs: {
             dist: {
-                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
+                # Options: https:#github.com/jrburke/r.js/blob/master/build/example.build.js
                 options: {
-                    // `name` and `out` is set by grunt-usemin
+                    # `name` and `out` is set by grunt-usemin
                     baseUrl: 'app/scripts',
                     optimize: 'none',
-                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
-                    // https://github.com/yeoman/grunt-usemin/issues/30
-                    //generateSourceMaps: true,
-                    // required to support SourceMaps
-                    // http://requirejs.org/docs/errors.html#sourcemapcomments
+                    # TODO: Figure out how to make sourcemaps work with grunt-usemin
+                    # https:#github.com/yeoman/grunt-usemin/issues/30
+                    #generateSourceMaps: true,
+                    # required to support SourceMaps
+                    # http:#requirejs.org/docs/errors.html#sourcemapcomments
                     preserveLicenseComments: false,
                     useStrict: true,
                     wrap: true,
-                    //uglify2: {} // https://github.com/mishoo/UglifyJS2
+                    #uglify2: {} # https:#github.com/mishoo/UglifyJS2
                     mainConfigFile: 'app/scripts/main.js'
                 }
             }
@@ -194,15 +174,15 @@ module.exports = function (grunt) {
         htmlmin: {
             dist: {
                 options: {
-                    /*removeCommentsFromCDATA: true,
-                    // https://github.com/yeoman/grunt-usemin/issues/44
-                    //collapseWhitespace: true,
-                    collapseBooleanAttributes: true,
-                    removeAttributeQuotes: true,
-                    removeRedundantAttributes: true,
-                    useShortDoctype: true,
-                    removeEmptyAttributes: true,
-                    removeOptionalTags: true*/
+                    #removeCommentsFromCDATA: true,
+                    ## https:#github.com/yeoman/grunt-usemin/issues/44
+                    ##collapseWhitespace: true,
+                    #collapseBooleanAttributes: true,
+                    #removeAttributeQuotes: true,
+                    #removeRedundantAttributes: true,
+                    #useShortDoctype: true,
+                    #removeEmptyAttributes: true,
+                    #removeOptionalTags: true
                 },
                 files: [{
                     expand: true,
@@ -230,42 +210,37 @@ module.exports = function (grunt) {
             rjsConfig: 'app/scripts/main.js',
             indent: '    '
         }
-    });
+    }
 
-    grunt.renameTask('regarde', 'watch');
-    // remove when mincss task is renamed
-    grunt.renameTask('mincss', 'cssmin');
+    grunt.renameTask 'regarde', 'watch'
+    # remove when mincss task is renamed
+    grunt.renameTask 'mincss', 'cssmin'
 
-    grunt.registerTask('server', function (target) {
-        if (target === 'dist') {
-            return grunt.task.run(['open', 'connect:dist:keepalive']);
-        }
+    grunt.registerTask 'server', (target) ->
+        if target == 'dist'
+            return grunt.task.run ['open', 'connect:dist:keepalive']
 
-        grunt.task.run([
+        grunt.task.run [
             'clean:server',
             'coffee:dist',
-            'compass:server',
             'livereload-start',
             'connect:livereload',
             'open',
             'watch'
-        ]);
-    });
+        ]
 
-    grunt.registerTask('test', [
+    grunt.registerTask 'test', [
         'clean:server',
         'coffee',
-        'compass',
         'connect:test',
         'mocha'
-    ]);
+    ]
 
-    grunt.registerTask('build', [
+    grunt.registerTask 'build', [
         'clean:dist',
         'jshint',
         'test',
         'coffee',
-        'compass:dist',
         'useminPrepare',
         'requirejs',
         'imagemin',
@@ -275,7 +250,6 @@ module.exports = function (grunt) {
         'uglify',
         'copy',
         'usemin'
-    ]);
+    ]
 
-    grunt.registerTask('default', ['build']);
-};
+    grunt.registerTask 'default', ['build']
