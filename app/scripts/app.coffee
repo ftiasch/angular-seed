@@ -1,4 +1,4 @@
-define [],  ->
-    'use strict'
+'use strict'
 
-    '\'Allo \'Allo!'
+define ['angular'], (angular) ->
+    angular.module 'myApp', []

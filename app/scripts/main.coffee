@@ -1,9 +1,20 @@
 require.config {
     paths: {
+        require: '../components/requirejs/require',
         jquery: '../components/jquery/jquery',
+        underscore: '../components/underscore/underscore',
+        angular: '../components/angular/angular',
+    },
+    shim: {
+        angular: {
+            exports: 'angular',
+        },
+        underscore: {
+            exports: '_',
+        }
     }
 }
 
-require ['app', 'jquery'], (app, $) ->
-    console.log app
-    console.log 'Running jQuery %s', $().jquery
+require ['angular', 'app', 'controllers/controllers'], (angular, app) ->
+    angular.element(document).ready () ->
+        angular.bootstrap document, ['myApp']

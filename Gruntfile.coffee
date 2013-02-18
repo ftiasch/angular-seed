@@ -99,7 +99,7 @@ module.exports = (grunt) ->
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.app %>/scripts',
-                    src: '*.coffee',
+                    src: ['*.coffee', '**/*.coffee']
                     dest: '.tmp/scripts',
                     ext: '.js'
                 }]
