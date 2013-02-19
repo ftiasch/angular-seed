@@ -17,6 +17,10 @@ module.exports = (grunt) ->
     grunt.initConfig {
         yeoman: yeomanConfig,
         watch: {
+            jade: {
+                files: ['<%= yeoman.app %>/views/*.jade'],
+                tasks: ['jade'],
+            },
             coffee: {
                 files: ['<%= yeoman.app %>/scripts/*.coffee'],
                 tasks: ['coffee:dist']
@@ -24,6 +28,10 @@ module.exports = (grunt) ->
             coffeeTest: {
                 files: ['test/spec/*.coffee'],
                 tasks: ['coffee:test']
+            },
+            less: {
+                files: ['<%= yeoman.app %>/styles/*.less'],
+                tasks: ['less'],
             },
             livereload: {
                 files: [
@@ -94,12 +102,26 @@ module.exports = (grunt) ->
                 }
             }
         },
+        jade: {
+            dist: {
+                options: {
+                    pretty: true,
+                },
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/views',
+                    src: '**/*.jade',
+                    dest: '.tmp/views',
+                    ext: '.html',
+                }]
+            }
+        },
         coffee: {
             dist: {
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.app %>/scripts',
-                    src: ['*.coffee', '**/*.coffee']
+                    src: '**/*.coffee',
                     dest: '.tmp/scripts',
                     ext: '.js'
                 }]
@@ -111,6 +133,16 @@ module.exports = (grunt) ->
                     src: '*.coffee',
                     dest: 'test/spec'
                 }]
+            }
+        },
+        less: {
+            options: {
+                paths: ['<%= yeoman.app %>/styles', '<%= yeoman.app %>/components'],
+            },
+            dist: {
+                files: {
+                    '.tmp/styles/main.css': '<%= yeoman.app %>/styles/main.less',
+                },
             }
         },
         # not used since Uglify task does concat,
@@ -174,13 +206,14 @@ module.exports = (grunt) ->
         htmlmin: {
             dist: {
                 options: {
+                    removeComments: true,
                     #removeCommentsFromCDATA: true,
                     # https://github.com/yeoman/grunt-usemin/issues/44
-                    #collapseWhitespace: true,
-                    #collapseBooleanAttributes: true,
+                    collapseWhitespace: true,
+                    collapseBooleanAttributes: true,
                     #removeAttributeQuotes: true,
                     #removeRedundantAttributes: true,
-                    #useShortDoctype: true,
+                    useShortDoctype: true,
                     #removeEmptyAttributes: true,
                     #removeOptionalTags: true
                 },
@@ -188,7 +221,12 @@ module.exports = (grunt) ->
                     expand: true,
                     cwd: '<%= yeoman.app %>',
                     src: '*.html',
-                    dest: '<%= yeoman.dist %>'
+                    dest: '<%= yeoman.dist %>',
+                }, {
+                    expand: true,
+                    cwd: '.tmp/views',
+                    src: '**/*.html',
+                    dest: '<%= yeoman.dist %>/views',
                 }]
             }
         },
@@ -203,6 +241,11 @@ module.exports = (grunt) ->
                         '*.{ico,txt}',
                         '.htaccess'
                     ]
+                }, {
+                    expand: true,
+                    cwd: '.tmp/scripts',
+                    dest: '<%= yeoman.dist %>/scripts',
+                    src: '**/*.js',
                 }]
             }
         },
@@ -222,7 +265,9 @@ module.exports = (grunt) ->
 
         grunt.task.run [
             'clean:server',
+            'jade',
             'coffee:dist',
+            'less',
             'livereload-start',
             'connect:livereload',
             'open',
@@ -239,17 +284,19 @@ module.exports = (grunt) ->
     grunt.registerTask 'build', [
         'clean:dist',
         'jshint',
-        'test',
+        #'test',
+        'jade',
         'coffee',
-        'useminPrepare',
-        'requirejs',
+        'less',
+        #'useminPrepare',
+        #'requirejs',
         'imagemin',
         'cssmin',
         'htmlmin',
-        'concat',
-        'uglify',
+        #'concat',
+        #'uglify',
         'copy',
-        'usemin'
+        #'usemin'
     ]
 
     grunt.registerTask 'default', ['build']
