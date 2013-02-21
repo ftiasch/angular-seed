@@ -1,5 +1,6 @@
 'use strict'
 
 define ['app'], (app) ->
-    app.controller 'DemoCtrl', ($scope) ->
+    app.controller('DemoCtrl', ($scope) ->
         $scope.name = 'ftiasch'
+    )

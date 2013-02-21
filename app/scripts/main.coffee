@@ -15,6 +15,6 @@ require.config {
     }
 }
 
-require ['angular', 'app', 'controllers/controllers', 'routes'], (angular, app) ->
+require ['angular', 'app', 'controllers/controllers', 'routes'], (angular) ->
     angular.element(document).ready () ->
         angular.bootstrap document, ['myApp']
